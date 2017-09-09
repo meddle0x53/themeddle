@@ -1,8 +1,11 @@
-title: Sample Blog
+title: Meddling with the code!
+sub_title: λ |> hæskəl erl. &rust (scheme) .js {ruby}
+styles_path: blog.css
+background_image_path: back.jpg
 social:
   rss: true
   twitter: ntzvetinov
   github: meddle0x53
   stars_for_blogit: true
 bg:
-  title: Примерен блог
+  title: Meddling with the код!
