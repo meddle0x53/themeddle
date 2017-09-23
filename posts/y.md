@@ -7,27 +7,25 @@ tags:
   - anonymous functions
   - elixir
   - erlang
+  - ruby
 ---
 
 # Defining Recursion
 
-This is the English version of an article, I wrote for [elixir-lang.bg](https://elixir-lang.bg/posts).
+This is the English version of an article I wrote for [elixir-lang.bg](https://elixir-lang.bg/posts).
 You can find it in [Bulgarian on this blog too](http://themeddle.com/bg/posts/y).
 
-It is an interesting exercise - we are going to use a very limited subset of a language.
-A subset which doesn't support recursion.
-And will try to define a recursive function.
-By language I mean a few languages.
-I added an interesting new feature to my blog engine's front-end [BlogtWeb](https://github.com/meddle0x53/blogit_web),
+It is an interesting exercise, in which we are going to use a very limited subset of the language - a subset that doesn't even support recursion. Using only it, we will try to define a recursive function.
+By language I actually mean _a few_ languages. I added an interesting new feature to my blog engine's front-end [BlogitWeb](https://github.com/meddle0x53/blogit_web),
 which allows me to write examples in more than one programming language and give the reader the feeedom to select the one he/she likes.
 
-This article will use [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code}.
+In this article we will be using [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code}.
 Let's begin.
 
 ## Prerequisites
 
-For our language of choice, we are going to use only its interpreter and won't use named functions.
-We will forget that [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code} support named functions.
+For each language of choice, we are going to use only its interpreter and won't use named functions.
+We will forget for a moment that [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code} support named functions.
 
 So let's run our interpreter:
 
@@ -42,7 +40,7 @@ irb
 ```
 {: .multi-code}
 
-Now we are going to limit ourselves by using only numbers, basic arithmetic and comparing the numbers:
+We are going to limit ourselves by using only numbers, basic arithmetic and comparing the numbers:
 
 ```elixir
 23
@@ -102,9 +100,9 @@ Now we are going to limit ourselves by using only numbers, basic arithmetic and 
 ```
 {: .multi-code}
 
-In fact we are going to try to define and use a [Factorial function](https://en.wikipedia.org/wiki/Factorial).
-So that's why we are going to use just integer numbers and arithmetic operations with them.
-Let's see how we can define a simple anonymous function. Let's define an `add` function, which adds its two arguments and returns the result:
+We are going to try to define and use a [Factorial function](https://en.wikipedia.org/wiki/Factorial),
+so that's why we are going to use only integral numbers and arithmetic operations with them.
+Let's see how we can define a simple anonymous function. Let's define a function, which adds its two arguments and returns the result:
 
 ```elixir
 fn (a, b) -> a + b end
@@ -140,6 +138,7 @@ Now we can call this function like this:
 # 9
 
 #or
+
 -> (a, b) { a + b }[4, 5]
 # 9
 
@@ -148,6 +147,7 @@ Now we can call this function like this:
 {: .multi-code}
 
 We can also have different logic depending on the parameters we pass:
+
 ```elixir
 (fn
   0 -> 0
@@ -181,11 +181,12 @@ end[3]
 
 That's basically a function which gives the previous number. For zero it returns zero as it doesn't have previous number.
 We pretend to not know about negative numbers in our limited subset of the language.
-Good. Now we know everything we need to know in order to define the *factorial* function! Or do we?
+
+Good! Now we know everything we need to know in order to define the Factorial function! Or do we?
 
 ## Factorial - The Beginning
 
-With our current knowledge we can define a function.
+So far we have learned how to define a function.
 If we had factorial defined we would expect from it to behave like this:
 
 ```elixir
@@ -240,44 +241,47 @@ Like with the functions we defined above, we should be able to define it and inv
 Let's define it:
 
 ```elixir
-iex> fn
-...>   0 -> 1
-...>   n -> n * something.(n - 1)
-...> end
+fn
+  0 -> 1
+  n -> n * something.(n - 1)
+end
+
   ** (CompileError) iex:4: undefined function something/0
 ```
 ```erlang
-> fun
->   (0) -> 1;
->   (N) -> N * Something(N - 1)
-> end.
+fun
+  (0) -> 1;
+  (N) -> N * Something(N - 1)
+end.
+
 * 3: variable 'Something' is unbound
 ```
 ```ruby
-irb> -> (n) do
-irb*   if n == 0
-irb>     1
-irb>   else
-irb*     n * something[n - 1]
-irb>   end
-irb> end
+-> (n) do
+  if n == 0
+    1
+  else
+    n * something[n - 1]
+  end
+end
 #<Proc:0x007ffe1cf6ade8@(irb):1 (lambda)>
 
 # but
 
-irb> -> (n) do
-irb*   if n == 0
-irb>     1
-irb>   else
-irb*     n * something[n - 1]
-irb>   end
-irb> end[2]
+-> (n) do
+  if n == 0
+    1
+  else
+    n * something[n - 1]
+  end
+end[2]
+
 NameError: undefined local variable or method `something' for main:Object
 ```
 {: .multi-code}
 
-Since [OTP 17](http://www.erlang.org/downloads/17.0) for [erlang]() {: .multi-code} it is possible to define a name of the anonymous function
-and it will work. But we will forget about the existence of this syntax in this article.
+Since [OTP 17](http://www.erlang.org/downloads/17.0) for [erlang]() {: .multi-code} it is possible to give a name of the anonymous function
+and it will work. For this article we will forget about this language feature as well.
 
 What's happening in the example above is normal. We are defining *factorial*, but it doesn't have a name so we don't know how to recursively call it in its body.
 We just put `something` `Something` `something`*multi-code*, but the variable doesn't exist and we get an error.
@@ -285,69 +289,69 @@ We just put `something` `Something` `something`*multi-code*, but the variable do
 But it is possible to write the factorial function in a way we can pass it to itself as an argument, so the variable exists in its definition:
 
 ```elixir
-iex> fn (me) ->
-...>   fn
-...>     0 -> 1
-...>     n -> n * me.(n - 1)
-...>   end
-...> end
+fn (me) ->
+  fn
+    0 -> 1
+    n -> n * me.(n - 1)
+  end
+end
 #Function<6.52032458/1 in :erl_eval.expr/5>
 ```
 ```erlang
-> fun (Me) ->
->   fun
->     (0) -> 1;
->     (N) -> N * Me(N - 1)
->   end
-> end.
+fun (Me) ->
+  fun
+    (0) -> 1;
+    (N) -> N * Me(N - 1)
+  end
+end.
 #Fun<erl_eval.6.99386804>
 ```
 ```ruby
-irb> -> (me) do
-irb>   -> (n) do
-irb*     if n == 0
-irb>       1
-irb>     else
-irb*       n * me[n - 1]
-irb>     end
-irb>   end
-irb> end
+-> (me) do
+  -> (n) do
+    if n == 0
+      1
+    else
+      n * me[n - 1]
+    end
+  end
+end
 => #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
 ```
 {: .multi-code}
 
 That's working. No errors. But what should we pass as its `me` `Me` `me`*multi-code* argument?
-The one thing that comes to mind is to pass the *factorial* function definition to itself.
+The first thing that comes to mind is to pass the *factorial* function definition to itself.
 To ease the code a bit, we now have the permition (and will show the syntax) to assign the above function to a variable:
 
 ```elixir
-iex> factorial = fn (me) ->
-...>   fn
-...>     0 -> 1
-...>     n -> n * me.(n - 1)
-...>   end
-...> end
+factorial = fn (me) ->
+  fn
+    0 -> 1
+    n -> n * me.(n - 1)
+  end
+end
 #Function<6.52032458/1 in :erl_eval.expr/5>
 ```
 ```erlang
-> Factorial = fun (Me) ->
->   fun
->     (0) -> 1;
->     (N) -> N * Me(N - 1)
->   end
-> end.
+Factorial = fun (Me) ->
+  fun
+    (0) -> 1;
+    (N) -> N * Me(N - 1)
+  end
+end.
 #Fun<erl_eval.6.99386804>
 ```
 ```ruby
-irb> factorial = -> (me) do
-irb>   -> (n) do
-irb*     if n == 0
-irb>       1
-irb>     else
-irb*       n * me[n - 1]
-irb>     end
-irb>   end
-irb> end
+factorial = -> (me) do
+  -> (n) do
+    if n == 0
+      1
+    else
+      n * me[n - 1]
+    end
+  end
+end
 => #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
 ```
 {: .multi-code}
@@ -355,46 +359,46 @@ irb> end
 Now, we can pass it to itself:
 
 ```elixir
-iex> factorial.(factorial)
+factorial.(factorial)
 #Function<6.52032458/1 in :erl_eval.expr/5>
 ```
 ```erlang
-> Factorial(Factorial).
+Factorial(Factorial).
 #Fun<erl_eval.6.99386804>
 ```
 ```ruby
-irb> factorial[factorial]
+factorial[factorial]
 => #<Proc:0x007f0c01576f48@(irb):26 (lambda)>>
 ```
 {: .multi-code}
 
-And that works too! Maybe this function implements factorial? It seems like that.
+...and that works too! Maybe this function implements factorial? It seems like that.
 Let's try it out:
 
 ```elixir
-iex> factorial.(factorial).(0)
-1
-iex> factorial.(factorial).(1)
+factorial.(factorial).(0)
+# 1
+factorial.(factorial).(1)
 ** (ArithmeticError) bad argument in arithmetic expression
 ```
 ```erlang
-> (Factorial(Factorial))(0).
-1
-> (Factorial(Factorial))(1).
+(Factorial(Factorial))(0).
+% 1
+(Factorial(Factorial))(1).
 ** exception error: an error occurred when evaluating an arithmetic expression
      in operator  */2
              called as 1 * #Fun<erl_eval.6.99386804>
 ```
 ```ruby
-irb> factorial[factorial][0]
-=> 1
-irb> factorial[factorial][1]
+factorial[factorial][0]
+# => 1
+factorial[factorial][1]
 TypeError: Proc can't be coerced into Fixnum
 ```
 {: .multi-code}
 
-OK, it works only when we pass zero. Why? I think the easiest way to understand what is happening is
-to write the actual function we get when we call our `factorial` `Factorial` `factorial`*multi-code* function with itself as an argument:
+OK, it works only when we pass `0`, but why? I think the easiest way to understand what is happening is
+to write out the actual function we get when we call our `factorial` `Factorial` `factorial`*multi-code* function with itself as an argument:
 
 ```elixir
 (fn (me) ->
@@ -423,7 +427,7 @@ end
 
 =>
 
-factorial_factorial.(0) # It is simple -> the 0 -> 1 is evaluated and it is success:
+factorial_factorial.(0) # Simple -> the 0 -> 1 case is evaluated and it is successful:
 1
 
 factorial_factorial.(1) # Here we hit the n -> n * me.(n - 1) case
@@ -444,7 +448,7 @@ factorial_factorial.(1) # Here we hit the n -> n * me.(n - 1) case
       n -> n * 0.(n - 1)
     end)
 
-# This one can't be reduced any more so we get
+# This expression can not be reduced any more, so we end up with
 # a number multiplied by an anonymous function - ArithmeticError
 ```
 
@@ -475,7 +479,7 @@ end.
 
 =>
 
-FactorialFactorial(0). % It is simple -> the (0) -> 1 is evaluated and it is success:
+FactorialFactorial(0). % Simple -> the (0) -> 1 case is evaluated and it is successful:
 1
 
 FactorialFactorial(1). % Here we hit the (N) -> N * Me(N - 1) case
@@ -496,7 +500,7 @@ FactorialFactorial(1). % Here we hit the (N) -> N * Me(N - 1) case
       (N) -> N * 0(N - 1)
     end).
 
-% This one can't be reduced any more so we get
+% This expression can not be reduced any more, so we end up with
 % a number multiplied by an anonymous function - ArithmeticError
 ```
 
@@ -541,7 +545,7 @@ end
 
 =>
 
-factorial_factorial[0] # It is simple -> the n == 0 is evaluated and it is success:
+factorial_factorial[0] # Simple -> the n == 0 case is evaluated and it is successful:
 1
 
 factorial_factorial[1] # Here we hit the n * me[n - 1] case
@@ -568,7 +572,7 @@ factorial_factorial[1] # Here we hit the n * me[n - 1] case
   end
 end
 
-# This one can't be reduced any more so we get
+# This expression can not be reduced any more so we end up with
 # a number multiplied by an anonymous function :
 # ruby tries to cast the anonymous function to a number - TypeError
 ```
@@ -579,10 +583,10 @@ Now that we know what's the problem, we can start thinking about how we could so
 
 ## Factorial II - Forever
 
-OK, how should we augment the `factorial` `Factorial` `factorial`*multi-code* function, we have in the moment, so it could work when it is passed `1` as an argument?
-Let's isolate only this case. When we pass `0`, it works. Let's try making it work with `1` and not think about all the other infinite to count cases.
+How should we augment the `factorial` `Factorial` `factorial`*multi-code* function that we have at the moment, so it could work when `1` is passed as an argument?
+Let's isolate this case. We know that passing `0` works. Let's try making it work with `1` and not think about all the other infinitely many cases.
 
-It is time to return to the reduction, we called `factorial_factorial` `FactorialFactorial` `factorial_factorial`*multi-code*:
+It is time to go back to the reduction, we called `factorial_factorial` `FactorialFactorial` `factorial_factorial`*multi-code*:
 
 ```elixir
 factorial_factorial = fn
@@ -658,11 +662,11 @@ end
 {: .multi-code}
 
 This looks like `1 * factorial.(0)` `1 * Factorial(0).` `1 * factorial[0]`*multi-code*. And we know that `factorial.(0)` `Factorial(0).` `factorial[0]`*multi-code* returns a function.
-The case working with zero is actually `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*.
-So if we think of a way to get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]`*multi-code* instead of `1 * factorial.(0)` `Factorial(0).` `1 * factorial[0]`*multi-code* in the
-above code, the `1` case would work.
+The working case of `0` is actually `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*.
+That means if we think of a way to get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]`*multi-code* instead of `1 * factorial.(0)` `Factorial(0).` `1 * factorial[0]`*multi-code* in the
+above code, the `1` case would work as well.
 
-Let's look at how we defined the factorial function:
+Let's look at the way we defined the factorial function:
 
 ```elixir
 factorial = fn (me) ->
@@ -693,8 +697,8 @@ factorial = ->(me) do
 ```
 {: .multi-code}
 
-When we try to compute factorial of one, the problem is that `me.(0)` `Me(0).` `me[0]`*multi-code* returns a function and not
-the factorial of zero. And we thought that `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*, which returns the factorial of `0`
+When we try to compute factorial of `1`, the problem we face is that `me.(0)` `Me(0).` `me[0]`*multi-code* returns a function and not
+the factorial of `0`. We were thinking that `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*, which returns the factorial of `0`,
 will solve the problem.
 
 This means that if we replace `me.(n - 1)` `Me(N - 1).` `me[n - 1]`*multi-code* with `me.(me).(n - 1)` `(Me(Me))(N - 1).` `me[me][n - 1]`*multi-code* when we call `factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]`*multi-code*,
@@ -745,7 +749,7 @@ factorial[factorial][1] # 1!
 ```
 {: .multi-code}
 
-And that's a success. It works when we pass one! So now we can think of a way to implement factorial of arbitrary number.
+Success! It works when we pass `1`! So now we can think of a way to implement `n!`.
 Let's try with `factorial.(factorial).(2)` `(Factorial(Factorial))(2).` `factorial[factorial][2]`*multi-code*, see the possible error and analyse how we got it in the same way we did it with
 `factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]`*multi-code*:
 
@@ -787,7 +791,7 @@ factorial[factorial][10]
 ```
 {: .multi-code}
 
-That's a working factorial and we wrote it only using anonymous functions.
+That's a working factorial function and we wrote it only using anonymous functions.
 It is important to notice that we can write it without using variables at all (we were using variables only for shortening the code), like this:
 
 ```elixir
@@ -849,7 +853,8 @@ end[
 ```
 {: .multi-code}
 
-That's recursion we implemented ourselves. But how we achieved that?
+We implemented recursion _ourselves_.
+Finally - how is this working?
 
 ## Factorial III - Infinity
 
@@ -916,7 +921,7 @@ end).(3)
                   end).(n - 1)
       end).(2)
 
-# Notice that this is the same function, we invoke with 3 from above.
+# Notice that this is the same function from above, the one we invoked with 3.
 # If we call it 'f', this is 3 * f.(2)
 
 =>
@@ -1021,7 +1026,7 @@ end)(3).
                  end))(N - 1)
      end)(2).
 
-% Notice that this is the same function, we invoke with 3 from above.
+% Notice that this is the same function from above, the one we invoked with 3.
 % If we call it 'F', this is 3 * F(2).
 
 =>
@@ -1166,7 +1171,7 @@ end[3]
       end
     end[2]
 
-# Notice that this is the same function, we invoke with 3 from above.
+# Notice that this is the same function from above, the one we invoked with 3.
 # If we call it 'f', this is 3 * f[2]
 
 =>
@@ -1268,8 +1273,8 @@ end
 ```
 {: .multi-code}
 
-The name is not right for this function, right? It is a higher-order function which takes itself to produce the factorial function.
-This is the real definition of the factorial function, using only anonymous functions:
+The name is not right for this function, is it? It is a higher-order function which takes itself to produce the factorial function.
+The real definition of the factorial function, using only anonymous functions, would look like this:
 
 ```elixir
 factorial = (fn (f) ->
@@ -1331,8 +1336,8 @@ irb> factorial[5]
 
 And with this definition, we did what we wanted to do.
 
-But let's play a bit more. Let's generalise our recursive function in a way it
-could implement another one-argument recursive function. For example, the function which computes the Nth
+We can play with this a bit more. Let's generalise our recursive function in a way it
+could implement another one-argument recursive function. For example, let this be the function which computes the Nth
 [Fibonacci number](https://en.wikipedia.org/wiki/Fibonacci_number).
 We can do it like this:
 
@@ -1399,14 +1404,14 @@ irb> fib[3]
 ## Factorial IV - Generalisations
 
 Abstraction is a very important concept in programming.
-* It is good to try to not repeat code if it is possible.
+* It is good to try not to repeat code, when possible.
 * It is great to reuse as much code as we can.
 
 We are going to create a function, which will help us define arbitrary recursive functions of one argument.
 Let's start with two definitions:
 
-1. A function, which has only bound variables is called *combinator*.
-These are functions which depend only on variables, declared as their arguments or in their bodies:
+1. A function that has only bound variables is called *combinator*.
+These are functions which depend only on the variables, declared as their arguments or in their bodies:
 
 ```elixir
 id = fn (x) -> x end # This is a combinator - The I combinator or the identity combinator
@@ -1461,7 +1466,7 @@ o[id] == id[id]
 ```
 {: .multi-code}
 
-And now we can return to our definition of the factorial function and try to reuse a piece of code repeated twice:
+Returning to our definition of the factorial function, we can try to reuse a piece of code repeated twice:
 
 ```elixir
 factorial = (fn (f) ->
@@ -1551,7 +1556,7 @@ end[
 {: .multi-code}
 
 Yes, we can define the factorial function as just an invocation of the *proto-factorial* function with
-argument - itself. In other words passing the *proto-factorial function* to the *Omega combinator*:
+one argument - itself. In other words, we are passing the *proto-factorial function* to the *Omega combinator*:
 
 ```elixir
 factorial = o.(fn (f) ->
@@ -1588,8 +1593,8 @@ factorial = o[->(f) { -> (n) { n == 0 ? 1 : n * f[f][n - 1] } }]
 ```
 {: .multi-code}
 
-That's easier to read.
-Now, let's extract the logic, specific for the factorial function into a separate function:
+That's much easier to read.
+Now, let's extract the logic, specific for the factorial function, into a separate function:
 
 ```elixir
 factorial = o.(fn (f) ->
@@ -1635,10 +1640,10 @@ factorial = o[
 ```
 {: .multi-code}
 
-Now it seems more complex than before, but actually, it is not.
+It may seem more complex than before, but actually, it is not.
 We extracted the essence of the factorial function in a special *proto* factorial function.
-But why we did it?
-Because it is a step in the right direction - we want to extract the essence of the factorial from the code which allows us to define recursive anonymous functions.
+But why have we done it?
+Because it is a step in the right direction - we want to extract the essence of the factorial from the code that allows us to define recursive anonymous functions.
 In fact, we are very close to achieving this. The next step is to extract the *proto* factorial from the body of the `factorial` `Factorial` `factorial`*multi-code* function:
 
 ```elixir
@@ -1686,11 +1691,11 @@ end[proto_factorial]
 ```
 {: .multi-code}
 
-It is easy to extract a function definition from the body of another function.
-We just move its definition outside the defining function, wrap the defining function in another function,
+Extracting a function definition from the body of another function is easy.
+We just move its definition outside the defining function and wrap the defining function in another function,
 so it can receive the extracted function as an argument and pass the extracted function.
 
-Now we have the piece of code we wanted : a function which lets us define recursive anonymous functions of one argument:
+Now we have the piece of code we wanted - a function that lets us define recursive anonymous functions of one argument:
 
 ```elixir
 fn (h) ->
@@ -1781,7 +1786,7 @@ fib = y[proto_fib]
 
 And that's how we defined the famous **Y combinator**. It's a higher-order function which allows
 defining recursion in places where the recursion is not part of the language. We limited our
-language to a subset which doesn't support recursion to check that. There are infinitely many *Y combinators*, the
+language to a subset which doesn't support recursion to prove that. There are infinitely many *Y combinators*, the
 one we defined above works only with functions of one argument. It is a kind of *Y combinator*, known as **Z combinator**, because
 [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code} are not lazy languages and the arguments of a function are evaluated before passing them to the function.
 In lazy languages there are even simpler *Y combinators*.
@@ -1825,8 +1830,11 @@ Let's create an alias of `proto_fib` `ProtoFib` `proto_fib`*multi-code* - `f` an
 We can say that `x` is fixed point of `f`. That's a fact, because the following equation is valid: `f(x) = x = f(f(x)) = f(..(f(..(f(x))..))..)`.
 
 The *Y combinator* won't be of much practical use to you. All the languages, we work with, implement recursion.
-But it is a very beautiful construct. It works a bit magically. Its definition and understanding are not meaningless in the end.
+Nevertheless, it is a very beautiful construct. It works a bit like magic. Its definition and understanding are not meaningless in the end.
 We saw how we can abstract and generalise concepts using ideas and terms from the **lambda calculus**, the grandfather of all the functional programming languages.
 And speaking of the *lambda calculus*, I'm thinking of writing more articles related to it and its concepts in the future, so stay tuned.
+
+This post came to you with the help of [Andy](https://github.com/Andreshk) who edited it for grammer and wording mistakes.
+Thank you for efford and time, Andy!
 
 Bye for now.
