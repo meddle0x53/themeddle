@@ -8,24 +8,26 @@ tags:
   - elixir
   - erlang
   - ruby
+  - javascript
+  - js
 ---
 
 # Defining Recursion
 
 This is the English version of an article I wrote for [elixir-lang.bg](https://elixir-lang.bg/posts).
-You can find it in [Bulgarian on this blog too](http://themeddle.com/bg/posts/y).
+You can find it in [Български on this blog too](http://themeddle.com/bg/posts/y).
 
 It is an interesting exercise, in which we are going to use a very limited subset of the language - a subset that doesn't even support recursion. Using only it, we will try to define a recursive function.
 By language I actually mean _a few_ languages. I added an interesting new feature to my blog engine's front-end [BlogitWeb](https://github.com/meddle0x53/blogit_web),
 which allows me to write examples in more than one programming language and give the reader the feeedom to select the one he/she likes.
 
-In this article we will be using [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code}.
+In this article we will be using [elixir]() {: .multi-code}, [erlang]() {:.multi-code}, [ruby]() {:.multi-code} and [javascript]() {:.multi-code}.
 Let's begin.
 
 ## Prerequisites
 
 For each language of choice, we are going to use only its interpreter and won't use named functions.
-We will forget for a moment that [elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code} support named functions.
+We will forget for a moment that [elixir]() {: .multi-code}, [erlang]() {:.multi-code}, [ruby]() {:.multi-code} and [javascript]() {:.multi-code} support named functions.
 
 So let's run our interpreter:
 
@@ -37,6 +39,10 @@ erl
 ```
 ```ruby
 irb
+```
+```javascript
+node
+# or some modern browser (Firefox?)
 ```
 {: .multi-code}
 
@@ -98,6 +104,24 @@ We are going to limit ourselves by using only numbers, basic arithmetic and comp
 5 == 4
 # false
 ```
+```javascript
+23
+
+5 + 4
+// 9
+
+5 * 4
+// 20
+
+5 > 4
+// true
+
+5 < 4
+// false
+
+5 === 4
+// false
+```
 {: .multi-code}
 
 We are going to try to define and use a [Factorial function](https://en.wikipedia.org/wiki/Factorial),
@@ -122,6 +146,15 @@ lambda { |a, b| a + b }
 -> (a, b) { a + b }
 # We are going to use the '->' syntax in this article.
 ```
+```javascript
+(function (a, b) { return a + b; });
+
+// or
+
+(a, b) => { return a + b; };
+
+// We are going to use the '=>' syntax in this article.
+```
 {: .multi-code}
 
 Now we can call this function like this:
@@ -137,12 +170,21 @@ Now we can call this function like this:
 -> (a, b) { a + b }.call(4, 5)
 # 9
 
-#or
+# or
 
 -> (a, b) { a + b }[4, 5]
 # 9
 
 # We are going to use the '[]' syntax in this article.
+```
+```javascript
+(function (a, b) { return a + b; })(4, 5);
+// 9
+
+// or
+
+((a, b) => { return a + b; })(4, 5);
+// 9
 ```
 {: .multi-code}
 
@@ -176,6 +218,18 @@ end[3]
 
 -> (x) { x == 0 ? 0 : x - 1 }[3]
 # 2
+```
+```javascript
+(
+  (x) => {
+    if (x === 0) {
+      return 0;
+    } else {
+      return x - 1;
+    }
+  }
+)(3);
+// 2
 ```
 {: .multi-code}
 
@@ -234,6 +288,21 @@ factorial[2]
 factorial[n]
 # n * factorial[n - 1] => n * n - 1 * n - 2 * ... * 1
 ```
+```javascript
+factorial(0);
+// 1
+
+factorial(1);
+// 1 * factorial(0); => 1
+
+// factorial(2);
+// 2 * factorial(1); => 2
+
+..........
+
+factorial(n);
+// n * factorial(n - 1); => n * n - 1 * n - 2 * ... * 1
+```
 {: .multi-code}
 
 That's wonderful! Now we can just define the function!
@@ -243,25 +312,25 @@ Let's define it:
 ```elixir
 fn
   0 -> 1
-  n -> n * something.(n - 1)
+  n -> n * me.(n - 1)
 end
 
-  ** (CompileError) iex:4: undefined function something/0
+  ** (CompileError) iex:4: undefined function me/0
 ```
 ```erlang
 fun
   (0) -> 1;
-  (N) -> N * Something(N - 1)
+  (N) -> N * Me(N - 1)
 end.
 
-* 3: variable 'Something' is unbound
+* 3: variable 'Me' is unbound
 ```
 ```ruby
 -> (n) do
   if n == 0
     1
   else
-    n * something[n - 1]
+    n * me[n - 1]
   end
 end
 #<Proc:0x007ffe1cf6ade8@(irb):1 (lambda)>
@@ -272,11 +341,35 @@ end
   if n == 0
     1
   else
-    n * something[n - 1]
+    n * me[n - 1]
   end
 end[2]
 
-NameError: undefined local variable or method `something' for main:Object
+NameError: undefined local variable or method `me' for main:Object
+```
+```javascript
+(n) => {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * me(n - 1);
+  }
+};
+// function ()
+
+// but
+
+(
+  (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(n - 1);
+    }
+  }
+)(2);
+
+ReferenceError: me is not defined
 ```
 {: .multi-code}
 
@@ -284,9 +377,9 @@ Since [OTP 17](http://www.erlang.org/downloads/17.0) for [erlang]() {: .multi-co
 and it will work. For this article we will forget about this language feature as well.
 
 What's happening in the example above is normal. We are defining *factorial*, but it doesn't have a name so we don't know how to recursively call it in its body.
-We just put `something` `Something` `something`*multi-code*, but the variable doesn't exist and we get an error.
+We just put `me` `Me` `me` `me`*multi-code*, but the name doesn't exist and we get an error.
 
-But it is possible to write the factorial function in a way we can pass it to itself as an argument, so the variable exists in its definition:
+But it is possible to write the factorial function in a way we can pass it to itself as an argument, so the name exists in its definition:
 
 ```elixir
 fn (me) ->
@@ -304,7 +397,7 @@ fun (Me) ->
     (N) -> N * Me(N - 1)
   end
 end.
-#Fun<erl_eval.6.99386804>
+% #Fun<erl_eval.6.99386804>
 ```
 ```ruby
 -> (me) do
@@ -316,11 +409,23 @@ end.
     end
   end
 end
-=> #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
+# => #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
+```
+```javascript
+(me) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(n - 1);
+    }
+  };
+};
+// function ()
 ```
 {: .multi-code}
 
-That's working. No errors. But what should we pass as its `me` `Me` `me`*multi-code* argument?
+That's working. No errors. But what should we pass as its `me` `Me` `me` `me`*multi-code* argument?
 The first thing that comes to mind is to pass the *factorial* function definition to itself.
 To ease the code a bit, we now have the permition (and will show the syntax) to assign the above function to a variable:
 
@@ -340,7 +445,7 @@ Factorial = fun (Me) ->
     (N) -> N * Me(N - 1)
   end
 end.
-#Fun<erl_eval.6.99386804>
+% #Fun<erl_eval.6.99386804>
 ```
 ```ruby
 factorial = -> (me) do
@@ -352,7 +457,19 @@ factorial = -> (me) do
     end
   end
 end
-=> #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
+# => #<Proc:0x007f0c01778f08@(irb):17 (lambda)>
+```
+```javascript
+let factorial = (me) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(n - 1);
+    }
+  };
+};
+// function ()
 ```
 {: .multi-code}
 
@@ -364,11 +481,15 @@ factorial.(factorial)
 ```
 ```erlang
 Factorial(Factorial).
-#Fun<erl_eval.6.99386804>
+% #Fun<erl_eval.6.99386804>
 ```
 ```ruby
 factorial[factorial]
-=> #<Proc:0x007f0c01576f48@(irb):26 (lambda)>>
+# => #<Proc:0x007f0c01576f48@(irb):26 (lambda)>>
+```
+```javascript
+factorial(factorial);
+// function factorial/<()
 ```
 {: .multi-code}
 
@@ -395,10 +516,16 @@ factorial[factorial][0]
 factorial[factorial][1]
 TypeError: Proc can't be coerced into Fixnum
 ```
+```javascript
+factorial(factorial)(0);
+// 1
+factorial(factorial)(1);
+// NaN
+```
 {: .multi-code}
 
 OK, it works only when we pass `0`, but why? I think the easiest way to understand what is happening is
-to write out the actual function we get when we call our `factorial` `Factorial` `factorial`*multi-code* function with itself as an argument:
+to write out the actual function we get when we call our `factorial` `Factorial` `factorial` `factorial`*multi-code* function with itself as an argument:
 
 ```elixir
 (fn (me) ->
@@ -576,6 +703,87 @@ end
 # a number multiplied by an anonymous function :
 # ruby tries to cast the anonymous function to a number - TypeError
 ```
+
+```javascript
+(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(n - 1);
+      }
+    };
+  }
+)(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(n - 1);
+      }
+    };
+  }
+);
+
+=>
+
+let factorialFactorial = (n) => {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * (
+      (me) => {
+        return (n) => {
+          if (n === 0) {
+            return 1;
+          } else {
+            return n * me(n - 1);
+          }
+        }
+      }
+    )(n - 1);
+  }
+};
+
+=>
+
+factorialFactorial(0); // Simple -> the n === 0 case is evaluated and it is successful:
+1
+
+factorialFactorial(1); // Here we hit the n * me(n - 1); case
+
+=>
+
+1 * (
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(n - 1);
+      }
+    };
+  }
+)(0);
+
+=>
+
+1 * (
+  (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * 0(n - 1);
+    }
+  }
+);
+
+// This expression can not be reduced any more so we end up with
+// a number multiplied by an anonymous function :
+// javascript casts the function to number and that's NaN. '1 * NaN' is also NaN.
+```
 {: .multi-code}
 
 That's good. We now know why it worked when we passed `0` to it and why it didn't when we passed `1`.
@@ -583,10 +791,10 @@ Now that we know what's the problem, we can start thinking about how we could so
 
 ## Factorial II - Forever
 
-How should we augment the `factorial` `Factorial` `factorial`*multi-code* function that we have at the moment, so it could work when `1` is passed as an argument?
+How should we augment the `factorial` `Factorial` `factorial` `factorial`*multi-code* function that we have at the moment, so it could work when `1` is passed as an argument?
 Let's isolate this case. We know that passing `0` works. Let's try making it work with `1` and not think about all the other infinitely many cases.
 
-It is time to go back to the reduction, we called `factorial_factorial` `FactorialFactorial` `factorial_factorial`*multi-code*:
+It is time to go back to the reduction, we called `factorial_factorial` `FactorialFactorial` `factorial_factorial` `factorialFactorial`*multi-code*:
 
 ```elixir
 factorial_factorial = fn
@@ -659,11 +867,44 @@ end
     end[0]
 
 ```
+```javascript
+let factorialFactorial = (n) => {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * (
+      (me) => {
+        return (n) => {
+          if (n === 0) {
+            return 1;
+          } else {
+            return n * me(n - 1);
+          }
+        }
+      }
+    )(n - 1);
+  }
+};
+
+// And when we pass 1, we have this case:
+
+1 * (
+      (me) => {
+        return (n) => {
+          if (n === 0) {
+            return 1;
+          } else {
+            return n * me(n - 1);
+          }
+        }
+      }
+    )(0);
+```
 {: .multi-code}
 
-This looks like `1 * factorial.(0)` `1 * Factorial(0).` `1 * factorial[0]`*multi-code*. And we know that `factorial.(0)` `Factorial(0).` `factorial[0]`*multi-code* returns a function.
-The working case of `0` is actually `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*.
-That means if we think of a way to get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]`*multi-code* instead of `1 * factorial.(0)` `Factorial(0).` `1 * factorial[0]`*multi-code* in the
+This looks like `1 * factorial.(0)` `1 * Factorial(0).` `1 * factorial[0]` `1 * factorial(0);`*multi-code*. And we know that `factorial.(0)` `Factorial(0).` `factorial[0]` `factorial(0);`*multi-code* returns a function.
+The working case of `0` is actually `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]` `factorial(factorial)(0);`*multi-code*.
+That means if we think of a way to get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]` `1 * factorial(factorial)(0);`*multi-code* instead of `1 * factorial.(0)` `Factorial(0).` `1 * factorial[0]` `1 * factorial(0);`*multi-code* in the
 above code, the `1` case would work as well.
 
 Let's look at the way we defined the factorial function:
@@ -695,14 +936,25 @@ factorial = ->(me) do
       end
     end
 ```
+```javascript
+let factorial = (me) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(n - 1);
+    }
+  };
+};
+```
 {: .multi-code}
 
-When we try to compute factorial of `1`, the problem we face is that `me.(0)` `Me(0).` `me[0]`*multi-code* returns a function and not
-the factorial of `0`. We were thinking that `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]`*multi-code*, which returns the factorial of `0`,
+When we try to compute factorial of `1`, the problem we face is that `me.(0)` `Me(0).` `me[0]` `me(0);`*multi-code* returns a function and not
+the factorial of `0`. We were thinking that `factorial.(factorial).(0)` `(Factorial(Factorial))(0).` `factorial[factorial][0]` `factorial(factorial)(0);`*multi-code*, which returns the factorial of `0`,
 will solve the problem.
 
-This means that if we replace `me.(n - 1)` `Me(N - 1).` `me[n - 1]`*multi-code* with `me.(me).(n - 1)` `(Me(Me))(N - 1).` `me[me][n - 1]`*multi-code* when we call `factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]`*multi-code*,
-we will get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]`*multi-code* which is `1 * 0!` or `1!`.
+This means that if we replace `me.(n - 1)` `Me(N - 1)` `me[n - 1]` `me(n - 1);`*multi-code* with `me.(me).(n - 1)` `(Me(Me))(N - 1)` `me[me][n - 1]` `me(me)(n - 1);`*multi-code* when we call `factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]` `factorial(factorial)(1);`*multi-code*,
+we will get `1 * factorial.(factorial).(0)` `1 * (Factorial(Factorial))(0).` `1 * factorial[factorial][0]` `1 * factorial(factorial)(0);`*multi-code* which is `1 * 0!` or `1!`.
 Let's try it:
 
 ```elixir
@@ -747,11 +999,27 @@ factorial[factorial][0] # 0!
 factorial[factorial][1] # 1!
 # 1
 ```
+```javascript
+let factorial = (me) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(me)(n - 1);
+    }
+  };
+};
+
+factorial(factorial)(0); // 0!
+// 1
+factorial(factorial)(1); // 1!
+// 1
+```
 {: .multi-code}
 
 Success! It works when we pass `1`! So now we can think of a way to implement `n!`.
-Let's try with `factorial.(factorial).(2)` `(Factorial(Factorial))(2).` `factorial[factorial][2]`*multi-code*, see the possible error and analyse how we got it in the same way we did it with
-`factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]`*multi-code*:
+Let's try with `factorial.(factorial).(2)` `(Factorial(Factorial))(2).` `factorial[factorial][2]` `factorial(factorial)(2);`*multi-code*, see the possible error and analyse how we got it in the same way we did it with
+`factorial.(factorial).(1)` `(Factorial(Factorial))(1).` `factorial[factorial][1]` `factorial(factorial)(1);`*multi-code*:
 
 ```elixir
 factorial.(factorial).(2)
@@ -788,6 +1056,18 @@ factorial[factorial][5]
 # 120 or 5!
 factorial[factorial][10]
 # 3628800 or 10!
+```
+```javascript
+factorial(factorial)(2);
+// 2
+// Hmm... That's like 2 * 1 * 0! - 2!
+
+factorial(factorial)(3);
+// 6 or 3!
+factorial(factorial)(5);
+// 120 or 5!
+factorial(factorial)(10);
+// 3628800 or 10!
 ```
 {: .multi-code}
 
@@ -851,6 +1131,30 @@ end[
 ][5]
 # 120
 ```
+```javascript
+(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(me)(n - 1);
+      }
+    };
+  }
+)(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(me)(n - 1);
+      }
+    };
+  }
+)(5);
+// 120
+```
 {: .multi-code}
 
 We implemented recursion _ourselves_.
@@ -858,7 +1162,7 @@ Finally - how is this working?
 
 ## Factorial III - Infinity
 
-Let's see what's happening when we invoke `factorial.(factorial).(3)` `(Factorial(Factorial))(3).` `factorial[factorial][3]`*multi-code*, for example:
+Let's see what's happening when we invoke `factorial.(factorial).(3)` `(Factorial(Factorial))(3).` `factorial[factorial][3]` `factorial(factorial)(3);`*multi-code*, for example:
 
 ```elixir
 (fn (me) ->
@@ -1239,10 +1543,175 @@ end[3]
 
 3 * 2 * 1 * 1 == 6 # 3!
 ```
+```javascript
+(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(me)(n - 1);
+      }
+    };
+  }
+)(
+  (me) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * me(me)(n - 1);
+      }
+    };
+  }
+)(3);
+
+=>
+
+(
+  (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * (
+                  (me) => {
+                    return (n) => {
+                      if (n === 0) {
+                        return 1;
+                      } else {
+                        return n * me(me)(n - 1);
+                      }
+                    };
+                  }
+                )(
+                  (me) => {
+                    return (n) => {
+                      if (n === 0) {
+                        return 1;
+                      } else {
+                        return n * me(me)(n - 1);
+                      }
+                    };
+                  }
+                )(n - 1);
+    }
+  }
+)(3);
+
+// or
+
+factorial(factorial)(3);
+
+=>
+
+(
+  (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * factorial(factorial)(n - 1);
+    }
+  }
+)(3);
+
+// if we reduce evem more =>
+
+3 * (
+      (me) => {
+        return (n) => {
+          if (n === 0) {
+            return 1;
+          } else {
+            return n * me(me)(n - 1);
+          }
+        };
+      }
+    )(
+      (me) => {
+        return (n) => {
+          if (n === 0) {
+            return 1;
+          } else {
+            return n * me(me)(n - 1);
+          }
+        };
+      }
+    )(2);
+
+// Notice that this is the same function from above, the one we invoked with 3.
+// And this function is exactly factorial(factorial).
+// If we call it 'f', this is 3 * f(2);
+
+// or
+
+3 * factorial(factorial)(2);
+
+// But we can do the same reductions for factorial(factorial)(2) =>
+
+3 * 2 * (
+          (me) => {
+            return (n) => {
+              if (n === 0) {
+                return 1;
+              } else {
+                return n * me(me)(n - 1);
+              }
+            };
+          }
+        )(
+          (me) => {
+            return (n) => {
+              if (n === 0) {
+                return 1;
+              } else {
+                return n * me(me)(n - 1);
+              }
+            };
+          }
+        )(1);
+
+// or
+
+3 * 2 * factorial(factorial)(1);
+
+=>
+
+3 * 2 * 1 * (
+              (me) => {
+                return (n) => {
+                  if (n === 0) {
+                    return 1;
+                  } else {
+                    return n * me(me)(n - 1);
+                  }
+                };
+              }
+            )(
+              (me) => {
+                return (n) => {
+                  if (n === 0) {
+                    return 1;
+                  } else {
+                    return n * me(me)(n - 1);
+                  }
+                };
+              }
+            )(0);
+
+// or
+
+3 * 2 * 1 * factorial(factorial)(0);
+
+// But here n is 0, so factorial(factorial)(0); returns just 1:
+
+=>
+
+3 * 2 * 1 * 1 === 6; // 3!
+```
 {: .multi-code}
 
 In other words we have a repeating function, which behaves like factorial.
-And let's look at the function we called `factorial` `Factorial` `factorial`*multi-code* again:
+And let's look at the function we called `factorial` `Factorial` `factorial` `factorial`*multi-code* again:
 
 ```elixir
 factorial = fn (me) ->
@@ -1271,6 +1740,17 @@ factorial = ->(me) do
   end
 end
 ```
+```javascript
+let factorial = (me) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * me(me)(n - 1);
+    }
+  };
+};
+```
 {: .multi-code}
 
 The name is not right for this function, is it? It is a higher-order function which takes itself to produce the factorial function.
@@ -1289,8 +1769,8 @@ end).(fn (f) ->
   end
 end)
 
-iex> factorial.(5)
-120
+factorial.(5)
+# 120
 ```
 ```erlang
 Factorial = (fun (F) ->
@@ -1305,8 +1785,8 @@ end)(fun (F) ->
   end
 end).
 
-> Factorial(5).
-120
+Factorial(5).
+% 120
 ```
 ```ruby
 factorial = ->(f) do
@@ -1329,8 +1809,34 @@ end[
   end
 ]
 
-irb> factorial[5]
-120
+factorial[5]
+# 120
+```
+```javascript
+let factorial = (
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+)(
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+);
+
+factorial(5);
+// 120
 ```
 {: .multi-code}
 
@@ -1356,8 +1862,8 @@ end).(fn (f) ->
   end
 end)
 
-iex> fib.(3)
-5
+fib.(3)
+# 5
 ```
 ```erlang
 Fib = (fun (F) ->
@@ -1374,8 +1880,8 @@ end)(fun (F) ->
   end
 end).
 
-> Fib(3).
-5
+Fib(3).
+% 5
 ```
 ```ruby
 fib = ->(f) do
@@ -1396,8 +1902,38 @@ end[
   end
 ]
 
-irb> fib[3]
-5
+fib[3]
+# 5
+```
+```javascript
+let fib = (
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else if (n === 1) {
+        return 2;
+      } else {
+        return f(f)(n - 1) + f(f)(n - 2);
+      }
+    };
+  }
+)(
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else if (n === 1) {
+        return 2;
+      } else {
+        return f(f)(n - 1) + f(f)(n - 2);
+      }
+    };
+  }
+);
+
+fib(3);
+// 5
 ```
 {: .multi-code}
 
@@ -1430,12 +1966,18 @@ fun (X) -> X + Y end.
 % It depends on some variable which is not declared in its body or as its arguments.
 ```
 ```ruby
-id = -> (x) { x } # This is a combinator - The I combinator or the identity combinator
+I = -> (x) { x } # This is a combinator - The I combinator or the identity combinator
 
-y = 5
 -> (x) { x + y }
 # This is not a combinator.
 # It depends on some variable which is not declared in its body or as its arguments.
+```
+```javascript
+let I = (x) => x; // This is a combinator - The I combinator or the identity combinator
+
+(x) => x + y;
+// This is not a combinator.
+// It depends on some variable which is not declared in its body or as its arguments.
 ```
 {: .multi-code}
 
@@ -1457,12 +1999,20 @@ O(I) == I(I).
 % true
 ```
 ```ruby
-o = -> (f) { f[f] }
+O = -> (f) { f[f] }
 
-o[id] == id
+O[I] == I
 # true
-o[id] == id[id]
+O[I] == I[I]
 # true
+```
+```javascript
+let O = (f) => f(f);
+
+O(I) === I;
+// true
+O(I) === I(I);
+// true
 ```
 {: .multi-code}
 
@@ -1553,6 +2103,43 @@ end[
   end
 ]
 ```
+```javascript
+let factorial = (
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+)(
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+);
+
+=>
+
+let factorial = ((g) => g(g))(
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+);
+```
 {: .multi-code}
 
 Yes, we can define the factorial function as just an invocation of the *proto-factorial* function with
@@ -1590,6 +2177,19 @@ factorial = o[
 # or
 
 factorial = o[->(f) { -> (n) { n == 0 ? 1 : n * f[f][n - 1] } }]
+```
+```javascript
+let factorial = O(
+  (f) => {
+    return (n) => {
+      if (n === 0) {
+        return 1;
+      } else {
+        return n * f(f)(n - 1);
+      }
+    };
+  }
+);
 ```
 {: .multi-code}
 
@@ -1638,13 +2238,30 @@ factorial = o[
   end
 ]
 ```
+```javascript
+let factorial = O(
+  (f) => {
+    let protoFactorial = (g) => {
+      return (n) => {
+        if (n === 0) {
+          return 1;
+        } else {
+          return n * g(n - 1);
+        }
+      };
+    };
+
+    return protoFactorial((x) => f(f)(x));
+  }
+);
+```
 {: .multi-code}
 
 It may seem more complex than before, but actually, it is not.
 We extracted the essence of the factorial function in a special *proto* factorial function.
 But why have we done it?
 Because it is a step in the right direction - we want to extract the essence of the factorial from the code that allows us to define recursive anonymous functions.
-In fact, we are very close to achieving this. The next step is to extract the *proto* factorial from the body of the `factorial` `Factorial` `factorial`*multi-code* function:
+In fact, we are very close to achieving this. The next step is to extract the *proto* factorial from the body of the `factorial` `Factorial` `factorial` `factorial`*multi-code* function:
 
 ```elixir
 proto_factorial = fn g ->
@@ -1688,6 +2305,25 @@ end
 factorial = -> (h) do
   o[-> (f) { h[-> (x) { f[f][x] }] } ]
 end[proto_factorial]
+```
+```javascript
+let protoFactorial = (g) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else {
+      return n * g(n - 1);
+    }
+  };
+};
+
+let factorial = (
+  (h) => {
+    return O(
+      (f) => h((x) => f(f)(x))
+    );
+  }
+)(protoFactorial);
 ```
 {: .multi-code}
 
@@ -1738,11 +2374,26 @@ end
 
 =>
 
-y = -> (h) do
+Y = -> (h) do
   -> (f) { f[f] }[
     -> (g) { h[-> (x) { g[g][x] }] }
   ]
 end
+```
+```javascript
+(h) => {
+  return O(
+    (f) => h((x) => f(f)(x))
+  );
+};
+
+=>
+
+let Y = (h) => {
+  return ((f) => f(f))(
+    (g) => h((x) => g(g)(x))
+  );
+};
 ```
 {: .multi-code}
 
@@ -1780,7 +2431,22 @@ proto_fib = -> (f) do
   end
 end
 
-fib = y[proto_fib]
+fib = Y[proto_fib]
+```
+```javascript
+let protoFib = (f) => {
+  return (n) => {
+    if (n === 0) {
+      return 1;
+    } else if (n === 1) {
+      return 2;
+    } else {
+      return f(n - 1) + f(n - 2);
+    }
+  };
+};
+
+let fib = Y(protoFib);
 ```
 {: .multi-code}
 
@@ -1788,7 +2454,7 @@ And that's how we defined the famous **Y combinator**. It's a higher-order funct
 defining recursion in places where the recursion is not part of the language. We limited our
 language to a subset which doesn't support recursion to prove that. There are infinitely many *Y combinators*, the
 one we defined above works only with functions of one argument. It is a kind of *Y combinator*, known as **Z combinator**, because
-[elixir]() {: .multi-code}, [erlang]() {:.multi-code} and [ruby]() {:.multi-code} are not lazy languages and the arguments of a function are evaluated before passing them to the function.
+[elixir]() {: .multi-code}, [erlang]() {:.multi-code}, [ruby]() {:.multi-code} and [javascript]() {:.multi-code} are not lazy languages and the arguments of a function are evaluated before passing them to the function.
 In lazy languages there are even simpler *Y combinators*.
 
 Another name of the *Y combinator* is _the fixed point combinator_. This means that the combinator returns a fixed point of the function passed to it.
@@ -1815,7 +2481,7 @@ Fib(5).
 % 13
 ```
 ```ruby
-fib = y[proto_fib]
+fib = Y[proto_fib]
 
 proto_fib[fib][5]
 # 13
@@ -1824,9 +2490,19 @@ fib[5]
 proto_fib[proto_fib[fib]][5]
 # 13
 ```
+```javascript
+fib = Y(protoFib);
+
+protoFib(fib)(5);
+// 13
+fib(5);
+// 13
+protoFib(protoFib(fib))(5);
+// 13
+```
 {: .multi-code}
 
-Let's create an alias of `proto_fib` `ProtoFib` `proto_fib`*multi-code* - `f` and another one of `y.(proto_fib)` `Y(ProtoFib)` `y[proto_fib]`*multi-code* - `x`.
+Let's create an alias of `proto_fib` `ProtoFib` `proto_fib` `protoFib`*multi-code* - `f` and another one of `y.(proto_fib)` `Y(ProtoFib)` `y[proto_fib]` `Y(protoFib)`*multi-code* - `x`.
 We can say that `x` is fixed point of `f`. That's a fact, because the following equation is valid: `f(x) = x = f(f(x)) = f(..(f(..(f(x))..))..)`.
 
 The *Y combinator* won't be of much practical use to you. All the languages, we work with, implement recursion.
