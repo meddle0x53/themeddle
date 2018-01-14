@@ -756,6 +756,9 @@ factorial.(five) |> church_to_int.()
  * [Types and Programming Languages][11] - Теми от тази книга ще разглеждаме и занапред. Говори се за типизирани езици, но има глава и за нетипизираното ламбда смятане.
  * [Understanding Computation][12] - Съдържа подобни упражнения на тези, с които се занимавахме тук, на `ruby`.
 
+## Код
+
+Кодът от тази публикация можете да намерите [тук][13].
 
 
 [1]: posts/y
@@ -770,3 +773,4 @@ factorial.(five) |> church_to_int.()
 [10]: https://twitter.com/pkamenarsky
 [11]: https://www.amazon.com/Types-Programming-Languages-MIT-Press/dp/0262162091
 [12]: http://computationbook.com/
+[13]: https://gist.github.com/meddle0x53/1a3bd176d29e4b17a9b279d79463a141 
