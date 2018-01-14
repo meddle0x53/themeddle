@@ -1,6 +1,5 @@
 ---
 category: Functional Programming
-published: false
 tags:
   - y
   - combinators
