@@ -757,7 +757,8 @@ factorial.(five) |> church_to_int.()
 
 ## Код
 
-Кодът от тази публикация можете да намерите [тук][13].
+* Кодът от тази публикация можете да намерите [тук][13].
+* Markdown source-ът на тази публикация можете на намерите [тук][14]. Ако искате да добавите/поправите нещо, pull request-и ще бъдат посрещнати с радост!
 
 
 [1]: posts/y
@@ -772,4 +773,5 @@ factorial.(five) |> church_to_int.()
 [10]: https://twitter.com/pkamenarsky
 [11]: https://www.amazon.com/Types-Programming-Languages-MIT-Press/dp/0262162091
 [12]: http://computationbook.com/
-[13]: https://gist.github.com/meddle0x53/1a3bd176d29e4b17a9b279d79463a141 
+[13]: https://gist.github.com/meddle0x53/1a3bd176d29e4b17a9b279d79463a141
+[14]: https://github.com/meddle0x53/themeddle/blob/master/posts/bg/functions_all_the_way.md
