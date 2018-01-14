@@ -761,12 +761,12 @@ factorial.(five) |> church_to_int.()
 * Markdown source-ът на тази публикация можете на намерите [тук][14]. Ако искате да добавите/поправите нещо, pull request-и ще бъдат посрещнати с радост!
 
 
-[1]: posts/y
+[1]: y
 [2]: #currying
 [3]: #booleans
 [4]: #numbers
 [5]: https://www.amazon.com/gp/product/0192801422?ie=UTF8&tag=raganwald001-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0192801422
-[6]: https://en.wikipedia.org/wiki/Moses_Sch%C3%B6nfinkel
+[6]: https://en.wikipedia.org/wiki/Moses_Schönfinkel
 [7]: https://en.wikipedia.org/wiki/Haskell_Curry
 [8]: https://en.wikipedia.org/wiki/Church_encoding
 [9]: https://en.wikipedia.org/wiki/Alonzo_Church
