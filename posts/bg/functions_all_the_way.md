@@ -656,13 +656,13 @@ divide.(twenty).(four) |> church_to_int.()
 Функцията за връщане на остатък при делене е много подобна:
 
 ```elixir
-reminder =
+remainder =
   fn (n) ->
     fn (m) ->
-      y.(fn (reminder1) ->
+      y.(fn (remainder1) ->
         fn (current) ->
           num_gt_eq.(current).(m).(
-            fn (_) -> reminder1.(minus.(current).(m)) end
+            fn (_) -> remainder1.(minus.(current).(m)) end
           ).(
             fn (_) -> current end
           ).(zero)
@@ -672,11 +672,11 @@ reminder =
   end
 
 
-reminder.(twenty).(two) |> church_to_int.()
+remainder.(twenty).(two) |> church_to_int.()
 # 0
-reminder.(twenty).(three) |> church_to_int.()
+remainder.(twenty).(three) |> church_to_int.()
 # 2
-reminder.(twenty).(seven) |> church_to_int.()
+remainder.(twenty).(seven) |> church_to_int.()
 # 6
 ```
 

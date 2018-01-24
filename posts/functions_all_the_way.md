@@ -697,16 +697,16 @@ If `current` is greater than or equal to `m`, we add `1` to the recursive call t
 If `current` is less than `m`, we return `zero`.
 Notice that we achieved that by only using functions of one argument.
 
-The operation, returning the _reminder_ of a _division_ is very similar:
+The operation, returning the _remainder_ of a _division_ is very similar:
 
 ```elixir
-reminder =
+remainder =
   fn (n) ->
     fn (m) ->
-      y.(fn (reminder1) ->
+      y.(fn (remainder1) ->
         fn (current) ->
           num_gt_eq.(current).(m).(
-            fn (_) -> reminder1.(minus.(current).(m)) end
+            fn (_) -> remainder1.(minus.(current).(m)) end
           ).(
             fn (_) -> current end
           ).(zero)
@@ -716,11 +716,11 @@ reminder =
   end
 
 
-reminder.(twenty).(two) |> church_to_int.()
+remainder.(twenty).(two) |> church_to_int.()
 # 0
-reminder.(twenty).(three) |> church_to_int.()
+remainder.(twenty).(three) |> church_to_int.()
 # 2
-reminder.(twenty).(seven) |> church_to_int.()
+remainder.(twenty).(seven) |> church_to_int.()
 # 6
 ```
 
